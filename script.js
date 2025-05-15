@@ -1,33 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const editButtons = document.querySelectorAll('.edit-btn');
     const form = document.getElementById('recordForm');
-    const inputs = form.querySelectorAll('input, select');
-    const errorMessages = form.querySelectorAll('.error-message');
 
-    // Real-time validation
-    inputs.forEach((input, index) => {
-        input.addEventListener('input', () => {
-            if (!input.validity.valid) {
-                errorMessages[index].textContent = 'This field is required.';
-            } else {
-                errorMessages[index].textContent = '';
-            }
-        });
-    });
-
-    // Handle Edit
-    document.querySelectorAll('.edit-btn').forEach(button => {
+    editButtons.forEach(button => {
         button.addEventListener('click', () => {
-            const id = button.dataset.id;
-            fetch(`get_record.php?id=${id}`)
-                .then(response => response.json())
-                .then(data => {
-                    form.querySelector('input[name="action"]').value = 'edit';
-                    form.querySelector('input[name="id"]').value = data.id;
-                    form.querySelector('input[name="name"]').value = data.name;
-                    form.querySelector('input[name="email"]').value = data.email;
-                    form.querySelector('input[name="phone"]').value = data.phone;
-                    form.querySelector('select[name="gender"]').value = data.gender;
-                });
+            const row = button.closest('tr');
+            const cells = row.querySelectorAll('td');
+
+            // Populate form fields
+            form.name.value = cells[1].innerText.trim();
+            form.email.value = cells[2].innerText.trim();
+            form.phone.value = cells[3].innerText.trim();
+            form.gender.value = cells[4].innerText.trim();
+
+            // Set hidden fields
+            form.action.value = 'edit';
+            form.id.value = button.getAttribute('data-id');
+
+            // Scroll to form or focus
+            form.scrollIntoView({ behavior: 'smooth' });
         });
     });
 });
